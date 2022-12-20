@@ -24,7 +24,6 @@ export default class UserBox extends Component {
   }
 
   componentWillUnmount() {
-
   }
  
   addUser = (name, phone) => {
