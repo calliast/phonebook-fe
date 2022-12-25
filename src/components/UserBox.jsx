@@ -34,9 +34,9 @@ export default class UserBox extends Component {
       };
     });
     this.setState({
-      name: '',
-      phone: ''
-    })
+      name: "",
+      phone: "",
+    });
   };
 
   render() {
@@ -88,9 +88,11 @@ export default class UserBox extends Component {
           </div>
           <table className="table table-striped">
             <thead>
-              <th>No.</th>
-              <th>Name</th>
-              <th>Phone</th>
+              <tr>
+                <th>No.</th>
+                <th>Name</th>
+                <th>Phone</th>
+              </tr>
             </thead>
             <tbody>
               {this.state.users.map((user, index) => (
