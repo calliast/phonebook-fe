@@ -7,8 +7,6 @@ export default class UserBox extends Component {
     super(props);
     this.state = {
       users: [
-        { name: "Ikhsan", phone: "0229393921" },
-        { name: "rafi", phone: "32747239" },
       ],
     };
   }
