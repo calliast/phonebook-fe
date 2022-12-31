@@ -107,14 +107,9 @@ class UserItem extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-    contacts: state.contacts,
-    loading: state.isLoading
-})
-
 const mapDispatchToProps = (dispatch) => ({
   resend: ({ id, name, phone }) => dispatch(resendContact({ id, name, phone })),
   update: ({ id, name, phone }) => dispatch(updateContact({ id, name, phone })),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserItem);
+export default connect(null, mapDispatchToProps)(UserItem);
