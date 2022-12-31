@@ -1,4 +1,4 @@
-import { ADD_CONTACT_BE_FAILED, ADD_CONTACT_BE_SUCCESS, ADD_CONTACT_FE, DELETE_CONTACT_FAILED, DELETE_CONTACT_SUCCESS, LOAD_CONTACT_FAILED, LOAD_CONTACT_REQUEST, LOAD_CONTACT_SUCCESS, LOAD_MORE_FAILED, LOAD_MORE_SUCCESS, RESEND_CONTACT_FAILED, RESEND_CONTACT_SUCCESS, SEARCH_CONTACT_RESET_QUERY, SEARCH_CONTACT_SUCCESS, UPDATE_CONTACT_FAILED, UPDATE_CONTACT_SUCCESS } from "../actions/actionType";
+import { ADD_CONTACT_BE_FAILED, ADD_CONTACT_BE_SUCCESS, ADD_CONTACT_FE, DELETE_CONTACT_FAILED, DELETE_CONTACT_SUCCESS, LOAD_CONTACT_FAILED, LOAD_CONTACT_REQUEST, LOAD_CONTACT_SUCCESS, LOAD_MORE_FAILED, LOAD_MORE_SUCCESS, RESEND_CONTACT_FAILED, RESEND_CONTACT_SUCCESS, SEARCH_CONTACT_RESET_QUERY, SEARCH_CONTACT_SET_QUERY, UPDATE_CONTACT_FAILED, UPDATE_CONTACT_SUCCESS } from "../actions/actionType";
 
 const initialState = {
   contacts: [],
@@ -14,19 +14,17 @@ export default function phoneBookReducers(state = initialState, action) {
   switch (action.type) {
     //. LOAD CONTACT
     case LOAD_CONTACT_REQUEST:
-      console.log(`OP:${LOAD_CONTACT_REQUEST}`);
+      // console.log(`OP:${LOAD_CONTACT_REQUEST}`);
       return state;
     case LOAD_CONTACT_SUCCESS:
-      console.log(`OP:${LOAD_CONTACT_SUCCESS} response`, response);
-      console.log(`OP:${LOAD_CONTACT_SUCCESS} state.contacts`, state.contacts);
       return {
         params: {
           page: response.data.page,
           pages: response.data.pages,
           result: response.data.rowCount,
-          name: response.data.query.name ? response.data.query.name : '',
-          phone: response.data.query.phone ? response.data.query.phone: '',
-          mode: response.data.query.mode,
+          name: action.query.name ? action.query.name : "",
+          phone: action.query.phone ? action.query.phone : "",
+          mode: action.query.mode,
         },
         contacts: [
           ...(state.params.page === 1 ? [] : state.contacts),
@@ -37,7 +35,6 @@ export default function phoneBookReducers(state = initialState, action) {
         ],
       };
     case LOAD_MORE_SUCCESS:
-      console.log(`OP:${LOAD_MORE_SUCCESS}`, action);
       return {
         ...state,
         params: {
@@ -45,6 +42,9 @@ export default function phoneBookReducers(state = initialState, action) {
           page: state.params.page + 1,
         },
       };
+    case LOAD_MORE_FAILED:
+      console.log(`OP:${LOAD_MORE_FAILED}`, { message: action.error });
+      return state;
     case LOAD_CONTACT_FAILED:
       console.log(`OP:${LOAD_CONTACT_FAILED}`, { message: action.error });
       return state;
@@ -55,21 +55,20 @@ export default function phoneBookReducers(state = initialState, action) {
       return {
         ...state,
         contacts: [
-          ...state.contacts,
           {
-            id: action.data.id,
-            name: action.data.name,
-            phone: action.data.phone,
-            sent: action.data.sent,
+            id: response.id,
+            name: response.name,
+            phone: response.phone,
+            sent: response.sent,
           },
+          ...state.contacts,
         ],
       };
     case ADD_CONTACT_BE_SUCCESS:
-      console.log(`OP:${ADD_CONTACT_BE_SUCCESS}`, action);
       return {
         ...state,
         contacts: state.contacts.map((item) => {
-          if (item.id === action.data.id) {
+          if (item.id === response.id) {
             item.id = action.updated.id;
             item.sent = true;
           }
@@ -77,11 +76,10 @@ export default function phoneBookReducers(state = initialState, action) {
         }),
       };
     case ADD_CONTACT_BE_FAILED:
-      console.log(`OP:${ADD_CONTACT_BE_FAILED}`, action);
       return {
         ...state,
         contacts: state.contacts.map((item) => {
-          if (item.id === action.data.id) {
+          if (item.id === response.id) {
             item.sent = false;
           }
           return item;
@@ -89,26 +87,21 @@ export default function phoneBookReducers(state = initialState, action) {
       };
     //. Resend contact
     case RESEND_CONTACT_SUCCESS:
-      console.log(`OP:${RESEND_CONTACT_SUCCESS}`, action);
       return {
         ...state,
         contacts: state.contacts.map((item) => {
           if (item.id === action.id) {
-            item.id = action.data.id;
+            item.id = response.id;
             item.sent = true;
           }
           return item;
         }),
       };
-    case LOAD_MORE_FAILED:
-      console.log(`OP:${LOAD_MORE_FAILED}`, action.error);
-      return state
     case RESEND_CONTACT_FAILED:
       console.log(`OP:${RESEND_CONTACT_FAILED}`, { message: action.error });
       return state;
     //. Delete contact
     case DELETE_CONTACT_SUCCESS:
-      console.log(`OP:${DELETE_CONTACT_SUCCESS}`, action);
       return {
         ...state,
         contacts: state.contacts.filter((item) => item.id !== action.id),
@@ -118,15 +111,14 @@ export default function phoneBookReducers(state = initialState, action) {
       return state;
     //. Update contact
     case UPDATE_CONTACT_SUCCESS:
-      console.log(`OP:${UPDATE_CONTACT_SUCCESS}`, action);
       return {
         ...state,
         contacts: state.contacts.map((item) => {
-          if (item.id === action.data.id) {
+          if (item.id === response.id) {
             return {
-              id: action.data.id,
-              name: action.data.name,
-              phone: action.data.phone,
+              id: response.id,
+              name: response.name,
+              phone: response.phone,
               sent: true,
             };
           }
@@ -137,21 +129,19 @@ export default function phoneBookReducers(state = initialState, action) {
       console.log(`OP:${UPDATE_CONTACT_FAILED}`, { message: action.error });
       return state;
     //. Search contact
-    case SEARCH_CONTACT_SUCCESS:
-      console.log(`OP:${SEARCH_CONTACT_SUCCESS}`, action);
+    case SEARCH_CONTACT_SET_QUERY:
       return {
-        ...state,
+        contacts: [],
         params: {
           ...state.params,
-          ...action.data,
+          ...action.query,
           page: 1,
           pages: 1,
         },
       };
     case SEARCH_CONTACT_RESET_QUERY:
-      console.log(`OP:${SEARCH_CONTACT_RESET_QUERY}`, action);
       return {
-        ...state,
+        contacts: [],
         params: {
           ...state.params,
           name: "",
@@ -159,6 +149,13 @@ export default function phoneBookReducers(state = initialState, action) {
           page: 1,
         },
       };
+    // case SORT_DATA:
+    //   return {
+    //     ...state,
+    //     contacts: state.contacts.filter((obj, index, self) => {
+    //       return self.findIndex(v => v.id === obj.id) === index
+    //     })
+    //   }
     default:
       return state;
   }

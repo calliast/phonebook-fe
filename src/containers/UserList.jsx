@@ -11,7 +11,6 @@ class UserList extends Component {
   handleScrolling = (event) => {
     if (event.target.scrollHeight - event.target.scrollTop === event.target.clientHeight) {
       this.props.loadMore();
-      console.log("scroll triggered");
     }
   };
 
@@ -46,7 +45,6 @@ class UserList extends Component {
                 phone={user.phone}
                 sent={user.sent}
                 delete={() => this.props.delete(user.id)}
-                // update={this.props.update}
                 resend={this.props.resend}
               />
             ))}
@@ -58,11 +56,9 @@ class UserList extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(`UserList - state`, state);
-  console.log(`UserList - ownProps`, ownProps);
   return {
-    list: state/*.phoneBook*/.contacts,
-    params: state/*.phoneBook*/.params,
+    list: state.contacts,
+    params: state.params,
   };
 };
 
