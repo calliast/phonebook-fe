@@ -21,7 +21,7 @@ export default function phoneBookReducers(state = initialState, action) {
           result: response.data.rowCount,
           name: action.query.name ? action.query.name : state.params.name,
           phone: action.query.phone ? action.query.phone : state.params.phone,
-          mode: action.query.mode,
+          mode: action.query.mode ? action.query.mode : 'and',
         },
         contacts: [
           ...(state.params.page === 1 ? [] : state.contacts),

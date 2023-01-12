@@ -107,7 +107,7 @@ export default function UserSearch(props) {
             <div className="col-sm-6">
               <div className="col-sm-12">search-mode:</div>
               <fieldset className="row">
-                <div className="col-sm-4">
+                <div className="col-sm-6">
                   <div className="form-check">
                     <input className="form-check-input" type="radio" name="mode" id="strict" value="and" checked={mode.mode === "and"} onChange={handleModeChanges} />
                     <label className="form-check-label" htmlFor="strict">
@@ -115,7 +115,7 @@ export default function UserSearch(props) {
                     </label>
                   </div>
                 </div>
-                <div className="col-sm-2">
+                <div className="col-sm-4">
                   <div className="form-check">
                     <input className="form-check-input" type="radio" name="mode" id="loose" value="or" checked={mode.mode === "or"} onChange={handleModeChanges} />
                     <label className="form-check-label" htmlFor="loose">
