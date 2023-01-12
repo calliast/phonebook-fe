@@ -35,6 +35,7 @@ export default class UserBox extends Component {
         this.params.pages = response.data.pages;
         this.params.name = query.name ? query.name : this.params.name;
         this.params.phone = query.phone ? query.phone : this.params.phone;
+        this.params.mode = query.mode ? query.mode : this.params.mode;
         console.log(
           "OP ~ LoadContact page/pages",
           this.params.page + "/" + this.params.pages
