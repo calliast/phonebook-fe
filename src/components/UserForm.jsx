@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addContact } from "../actions/PhoneBook_action";
+import { addContact } from "../features/contact/contactSlice";
 
 export default function UserForm(props) {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ export default function UserForm(props) {
   const handleOnSubmit = useCallback(
     (event) => {
       event.preventDefault();
-      dispatch(addContact(contact.name, contact.phone));
+      dispatch(addContact({name:contact.name, phone: contact.phone}));
       setContact({
         name: "",
         phone: "",
@@ -39,7 +39,7 @@ export default function UserForm(props) {
         <div className="row mt-1 mb-4">
           <div className="row my-1">
             <div className="col-sm-6">
-              <label htmlFor="name" className="col-sm-2 col-form-label">
+              <label htmlFor="name" className="col-sm-4 col-form-label">
                 Name
               </label>
               <div className="col-sm-12">
@@ -48,7 +48,7 @@ export default function UserForm(props) {
             </div>
 
             <div className="col-sm-6">
-              <label htmlFor="phone" className="col-sm-2 col-form-label">
+              <label htmlFor="phone" className="col-sm-4 col-form-label">
                 Phone
               </label>
               <div className="col-sm-12">

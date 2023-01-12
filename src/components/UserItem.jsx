@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
-import { resendContact, updateContact } from "../actions/PhoneBook_action";
+import { resendContact, updateContact } from "../features/contact/contactSlice";
 
 export default function UserItem(props) {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ export default function UserItem(props) {
     setEdit({
       isEdit: false,
     });
-  }, [dispatch, contact])
+  }, [dispatch, contact]);
 
   const handleEdit = () => setEdit({ isEdit: true });
 

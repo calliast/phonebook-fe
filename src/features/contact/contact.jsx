@@ -1,6 +1,6 @@
-import UserList from "../containers/UserList";
-import UserForm from "../containers/UserForm";
-import UserSearch from "../containers/UserSearch";
+import UserList from "../../components/UserList";
+import UserForm from "../../components/UserForm";
+import UserSearch from "../../components/UserSearch";
 import { useState } from "react";
 
 export default function UserBox(props) {

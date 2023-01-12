@@ -1,10 +1,9 @@
 import { Fragment, useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
-import { searchContact, searchReset } from "../actions/PhoneBook_action";
+import { searchContact, resetQuery } from "../features/contact/contactSlice";
 
 export default function UserSearch(props) {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [query, setQuery] = useState({
     name: "",
     phone: "",
@@ -37,7 +36,7 @@ export default function UserSearch(props) {
     setSearch({
       isSearch: false,
     });
-    dispatch(searchReset())
+    dispatch(resetQuery());
   };
 
   const handleModeChanges = (event) => {
@@ -47,21 +46,25 @@ export default function UserSearch(props) {
     });
   };
 
-  const handleOnSearchSubmit = useCallback((event) => {
-    event.preventDefault();
-    if (query.name === "" && query.phone === "") {
-      return event.preventDefault();
-    }
-    dispatch(searchContact({
-      name: query.name,
-      phone: query.phone,
-      mode: mode.mode,
-    }))
-    console.log(mode.mode);
-    setSearch({
-      isSearch: true,
-    });
-  },[dispatch, query, mode ])
+  const handleOnSearchSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+      if (query.name === "" && query.phone === "") {
+        return event.preventDefault();
+      }
+      dispatch(
+        searchContact({
+          name: query.name,
+          phone: query.phone,
+          mode: mode.mode,
+        })
+      );
+      setSearch({
+        isSearch: true,
+      });
+    },
+    [dispatch, query, mode]
+  );
 
   return (
     <Fragment>
@@ -91,13 +94,13 @@ export default function UserSearch(props) {
           <div className="row my-1">
             <div className="col-sm-6">
               <div className="row">
-                <div className="col-sm-4">
+                <div className="col-sm-6">
                   <button type="submit" form="search-contact-form" className="btn btn-secondary col-sm-12">
                     Search
                   </button>
                 </div>
                 {search.isSearch && (
-                  <div className="col-sm-4">
+                  <div className="col-sm-6">
                     <button type="button" className="btn btn-warning col-sm-12" onClick={handleOnReset}>
                       Reset
                     </button>
@@ -108,7 +111,7 @@ export default function UserSearch(props) {
             <div className="col-sm-6">
               <div className="col-sm-12">search-mode:</div>
               <fieldset className="row">
-                <div className="col-sm-4">
+                <div className="col-sm-6">
                   <div className="form-check">
                     <input className="form-check-input" type="radio" name="mode" id="strict" value="and" checked={mode.mode === "and"} onChange={handleModeChanges} />
                     <label className="form-check-label" htmlFor="strict">
@@ -116,7 +119,7 @@ export default function UserSearch(props) {
                     </label>
                   </div>
                 </div>
-                <div className="col-sm-2">
+                <div className="col-sm-4">
                   <div className="form-check">
                     <input className="form-check-input" type="radio" name="mode" id="loose" value="or" checked={mode.mode === "or"} onChange={handleModeChanges} />
                     <label className="form-check-label" htmlFor="loose">
