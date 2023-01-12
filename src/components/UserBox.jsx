@@ -13,7 +13,6 @@ export default class UserBox extends Component {
     };
     this.state = {
       users: [],
-      key: "failed-to-send",
       tabId: "search-form",
     };
   }
@@ -22,21 +21,20 @@ export default class UserBox extends Component {
     this.loadContact();
   }
 
-  componentDidUpdate() {
-    console.log("OP ~ ComponentDidUpdate");
-  }
-
-  loadContact = async () => {
+  loadContact = async (query = {}) => {
     try {
       const fetching = await axios.get(
-        `http://localhost:3039/api/phonebooks?`,{
-          params: this.params
+        `http://localhost:3039/api/phonebooks?`,
+        {
+          params: { ...this.params, ...query },
         }
       );
-      const response = fetching.data
+      const response = fetching.data;
       if (response.success) {
         this.params.page = response.data.page;
         this.params.pages = response.data.pages;
+        this.params.name = query.name ? query.name : this.params.name;
+        this.params.phone = query.phone ? query.phone : this.params.phone;
         console.log(
           "OP ~ LoadContact page/pages",
           this.params.page + "/" + this.params.pages
@@ -65,33 +63,36 @@ export default class UserBox extends Component {
       };
       this.loadContact();
     }
-    console.log("🚀 ~ page/pages", this.params.page, "/", this.params.pages);
   };
 
   addUser = async (name, phone) => {
     const id = Date.now();
     try {
-      await this.setState(function (state) {
-        return {
-          users: [
-            ...state.users,
-            {
-              id,
-              name,
-              phone,
-              sent: true,
-            },
-          ],
-        };
-      });
+      if (!this.params.name && !this.params.phone) {
+        await this.setState(function (state) {
+          return {
+            users: [
+              ...state.users,
+              {
+                id,
+                name,
+                phone,
+                sent: true,
+              },
+            ],
+          };
+        });
+      }
 
-      const fetching = await axios.post("http://localhost:3039/api/phonebooks", { name, phone });
+      const fetching = await axios.post(
+        "http://localhost:3039/api/phonebooks",
+        { name, phone }
+      );
 
-      const response = fetching.data
+      const response = fetching.data;
 
-      if (response.success) {
+      if (response.success && !this.params.name && !this.params.phone) {
         this.setState(function (state) {
-          console.log("OP ~ add ~ data successfully added");
           return state.users.map((item) => {
             if (item.id === id) {
               item.id = response.data.id;
@@ -102,23 +103,28 @@ export default class UserBox extends Component {
         });
       }
     } catch (error) {
-      this.setState(function (state) {
-        return state.users.map((item) => {
-          if (item.id === id) {
-            item.sent = false;
-          }
-          return item;
+      console.log(error, "error saat add");
+      if (!this.params.name && !this.params.phone) {
+        this.setState(function (state) {
+          return state.users.map((item) => {
+            if (item.id === id) {
+              item.sent = false;
+            }
+            return item;
+          });
         });
-      });
+      }
     }
   };
 
   updateContact = async ({ id, name, phone }) => {
     try {
       const fetching = await axios.put(
-        `http://localhost:3039/api/phonebooks/${id}`,{ id, name, phone })
+        `http://localhost:3039/api/phonebooks/${id}`,
+        { id, name, phone }
+      );
 
-      const response = fetching.data
+      const response = fetching.data;
 
       if (response.success) {
         this.setState(function (state) {
@@ -145,10 +151,10 @@ export default class UserBox extends Component {
   deleteContact = async ({ id }) => {
     try {
       const fetching = await axios.delete(
-        `http://localhost:3039/api/phonebooks/${id}`,
+        `http://localhost:3039/api/phonebooks/${id}`
       );
 
-      const response = fetching.data
+      const response = fetching.data;
 
       if (response.success) {
         if (response.data !== 0) {
@@ -166,9 +172,12 @@ export default class UserBox extends Component {
 
   resendContact = async ({ id, name, phone }) => {
     try {
-      const fetching = await axios.post("http://localhost:3039/api/phonebooks", { name, phone })
+      const fetching = await axios.post(
+        "http://localhost:3039/api/phonebooks",
+        { name, phone }
+      );
 
-      const response = fetching.data
+      const response = fetching.data;
 
       if (response.success) {
         this.setState(function (state) {
@@ -180,7 +189,7 @@ export default class UserBox extends Component {
             return item;
           });
         });
-      } 
+      }
     } catch (error) {
       console.log("error", error);
     }
@@ -198,7 +207,7 @@ export default class UserBox extends Component {
       ...query,
       page: 1,
     };
-    this.loadContact();
+    this.loadContact(query);
   };
 
   render() {
@@ -288,14 +297,6 @@ export default class UserBox extends Component {
               update={this.updateContact}
               loadMore={this.loadMore}
             />
-          </div>
-          <div className="card-footer">
-            <button type="button" onClick={this.loadFailedToSend}>
-              test
-            </button>
-            <button type="button" onClick={this.loadFailedToSend2}>
-              test2
-            </button>
           </div>
         </div>
       </div>

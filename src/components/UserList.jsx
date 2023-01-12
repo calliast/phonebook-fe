@@ -5,7 +5,6 @@ export default function UserList(props) {
   const handleScrolling = (event) => {
     if (event.target.scrollHeight - event.target.scrollTop === event.target.clientHeight) {
       props.loadMore()
-      console.log(props.data);
     }
   }
 

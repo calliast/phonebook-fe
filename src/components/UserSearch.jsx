@@ -101,7 +101,7 @@ export default class UserSearch extends Component {
             <div className="row my-1">
               <div className="col-sm-6">
                 <div className="row">
-                  <div className="col-sm-4">
+                  <div className="col-sm-6">
                     <button
                       type="submit"
                       form="search-contact-form"
@@ -111,7 +111,7 @@ export default class UserSearch extends Component {
                     </button>
                   </div>
                   {this.state.isSearch && (
-                    <div className="col-sm-4">
+                    <div className="col-sm-6">
                       <button
                         type="button"
                         className="btn btn-warning col-sm-12"
@@ -126,7 +126,7 @@ export default class UserSearch extends Component {
               <div className="col-sm-6">
                 <div className="col-sm-12">search-mode:</div>
                 <fieldset className="row">
-                  <div className="col-sm-4">
+                  <div className="col-sm-6">
                     <div className="form-check">
                       <input
                         className="form-check-input"
