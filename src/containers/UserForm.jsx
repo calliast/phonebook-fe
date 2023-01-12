@@ -39,7 +39,7 @@ export default function UserForm(props) {
         <div className="row mt-1 mb-4">
           <div className="row my-1">
             <div className="col-sm-6">
-              <label htmlFor="name" className="col-sm-2 col-form-label">
+              <label htmlFor="name" className="col-sm-6 col-form-label">
                 Name
               </label>
               <div className="col-sm-12">
@@ -48,7 +48,7 @@ export default function UserForm(props) {
             </div>
 
             <div className="col-sm-6">
-              <label htmlFor="phone" className="col-sm-2 col-form-label">
+              <label htmlFor="phone" className="col-sm-6 col-form-label">
                 Phone
               </label>
               <div className="col-sm-12">

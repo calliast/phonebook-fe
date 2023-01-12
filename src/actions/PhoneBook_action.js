@@ -9,7 +9,7 @@ const request = axios.create({
 
 // LOAD CONTACT
 
-const loadContactSuccess = ({response, query}) => ({
+const loadContactSuccess = ({ response, query }) => ({
   type: LOAD_CONTACT_SUCCESS,
   data: response,
   query,
@@ -20,18 +20,20 @@ const loadContactFailed = (error) => ({
   error,
 });
 
-export const loadContact = (query = {}) => async (dispatch, getState) => {
-  const state = getState(); //.phoneBook;
-  try {
-    const fetching = await request.get("/api/phonebooks", {
-      params: {...state.params, ...query}
-    });
-    const response = fetching.data;
-    dispatch(loadContactSuccess({response, query}));
-  } catch (error) {
-    dispatch(loadContactFailed(error));
-  }
-};
+export const loadContact =
+  (query = {}) =>
+  async (dispatch, getState) => {
+    const state = getState(); //.phoneBook;
+    try {
+      const fetching = await request.get("/api/phonebooks", {
+        params: { ...state.params, ...query },
+      });
+      const response = fetching.data;
+      dispatch(loadContactSuccess({ response, query }));
+    } catch (error) {
+      dispatch(loadContactFailed(error));
+    }
+  };
 
 const loadMoreSuccess = () => ({
   type: LOAD_MORE_SUCCESS,
@@ -39,7 +41,7 @@ const loadMoreSuccess = () => ({
 
 const loadMoreFailed = (err) => ({
   type: LOAD_MORE_FAILED,
-  err
+  err,
 });
 
 export const loadMore = () => async (dispatch, getState) => {
@@ -73,7 +75,8 @@ const addContactBEFailed = (data, error) => ({
   error,
 });
 
-export const addContact = (name, phone) => async (dispatch) => {
+export const addContact = (name, phone) => async (dispatch, getState) => {
+  const state = getState();
   const id = Date.now();
   const newContact = {
     id,
@@ -82,18 +85,22 @@ export const addContact = (name, phone) => async (dispatch) => {
     sent: true,
   };
   try {
-    await dispatch(addContactFE(newContact));
+    if (!state.params.name && !state.params.phone) {
+      await dispatch(addContactFE(newContact));
+    }
 
     const fetching = await request.post("/api/phonebooks", {
       name,
       phone,
     });
     const response = fetching.data;
-    if (response.success) {
+    if (response.success && !state.params.name && !state.params.phone) {
       dispatch(addContactBESuccess({ contact: newContact, data: response.data }));
     }
   } catch (error) {
-    dispatch(addContactBEFailed(newContact, error));
+    if (!state.params.name && !state.params.phone) {
+      dispatch(addContactBEFailed(newContact, error));
+    }
   }
 };
 
@@ -198,9 +205,9 @@ export const searchContact =
 
 const searchResetQuery = () => ({
   type: SEARCH_CONTACT_RESET_QUERY,
-})
+});
 
-export const searchReset = () => async dispatch => {
-  await dispatch(searchResetQuery())
-  dispatch(loadContact())
-}
+export const searchReset = () => async (dispatch) => {
+  await dispatch(searchResetQuery());
+  dispatch(loadContact());
+};
