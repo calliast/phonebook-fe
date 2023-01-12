@@ -1,4 +1,4 @@
-import { ADD_CONTACT_BE_FAILED, ADD_CONTACT_BE_SUCCESS, ADD_CONTACT_FE, DELETE_CONTACT_FAILED, DELETE_CONTACT_SUCCESS, LOAD_CONTACT_FAILED, LOAD_CONTACT_REQUEST, LOAD_CONTACT_SUCCESS, LOAD_MORE_FAILED, LOAD_MORE_SUCCESS, RESEND_CONTACT_FAILED, RESEND_CONTACT_SUCCESS, SEARCH_CONTACT_RESET_QUERY, SEARCH_CONTACT_SUCCESS, UPDATE_CONTACT_FAILED, UPDATE_CONTACT_SUCCESS } from "../actions/actionType";
+import { ADD_CONTACT_BE_FAILED, ADD_CONTACT_BE_SUCCESS, ADD_CONTACT_FE, DELETE_CONTACT_FAILED, DELETE_CONTACT_SUCCESS, LOAD_CONTACT_FAILED, LOAD_CONTACT_SUCCESS, LOAD_MORE_FAILED, LOAD_MORE_SUCCESS, RESEND_CONTACT_FAILED, RESEND_CONTACT_SUCCESS, SEARCH_CONTACT_RESET_QUERY, SEARCH_CONTACT_SUCCESS, UPDATE_CONTACT_FAILED, UPDATE_CONTACT_SUCCESS } from "../actions/actionType";
 
 const initialState = {
   contacts: [],
@@ -13,20 +13,15 @@ export default function phoneBookReducers(state = initialState, action) {
   const response = action.data;
   switch (action.type) {
     //. LOAD CONTACT
-    case LOAD_CONTACT_REQUEST:
-      console.log(`OP:${LOAD_CONTACT_REQUEST}`);
-      return state;
     case LOAD_CONTACT_SUCCESS:
-      console.log(`OP:${LOAD_CONTACT_SUCCESS} response`, response);
-      console.log(`OP:${LOAD_CONTACT_SUCCESS} state.contacts`, state.contacts);
       return {
         params: {
           page: response.data.page,
           pages: response.data.pages,
           result: response.data.rowCount,
-          name: response.data.query.name ? response.data.query.name : "",
-          phone: response.data.query.phone ? response.data.query.phone : "",
-          mode: response.data.query.mode,
+          name: action.query.name ? action.query.name : state.params.name,
+          phone: action.query.phone ? action.query.phone : state.params.phone,
+          mode: action.query.mode,
         },
         contacts: [
           ...(state.params.page === 1 ? [] : state.contacts),
@@ -37,7 +32,6 @@ export default function phoneBookReducers(state = initialState, action) {
         ],
       };
     case LOAD_MORE_SUCCESS:
-      console.log(`OP:${LOAD_MORE_SUCCESS}`, action);
       return {
         ...state,
         params: {
@@ -54,7 +48,6 @@ export default function phoneBookReducers(state = initialState, action) {
     /* BREAD FEATURES */
     //. Add contact
     case ADD_CONTACT_FE:
-      console.log(`OP:${ADD_CONTACT_FE}`, action);
       return {
         ...state,
         contacts: [
@@ -68,7 +61,6 @@ export default function phoneBookReducers(state = initialState, action) {
         ],
       };
     case ADD_CONTACT_BE_SUCCESS:
-      console.log(`OP:${ADD_CONTACT_BE_SUCCESS}`, action);
       return {
         ...state,
         contacts: state.contacts.map((item) => {
@@ -92,7 +84,6 @@ export default function phoneBookReducers(state = initialState, action) {
       };
     //. Resend contact
     case RESEND_CONTACT_SUCCESS:
-      console.log(`OP:${RESEND_CONTACT_SUCCESS}`, action);
       return {
         ...state,
         contacts: state.contacts.map((item) => {
@@ -108,7 +99,6 @@ export default function phoneBookReducers(state = initialState, action) {
       return state;
     //. Delete contact
     case DELETE_CONTACT_SUCCESS:
-      console.log(`OP:${DELETE_CONTACT_SUCCESS}`, action);
       return {
         ...state,
         contacts: state.contacts.filter((item) => item.id !== action.id),
@@ -118,7 +108,6 @@ export default function phoneBookReducers(state = initialState, action) {
       return state;
     //. Update contact
     case UPDATE_CONTACT_SUCCESS:
-      console.log(`OP:${UPDATE_CONTACT_SUCCESS}`, action);
       return {
         ...state,
         contacts: state.contacts.map((item) => {
@@ -138,7 +127,6 @@ export default function phoneBookReducers(state = initialState, action) {
       return state;
     //. Search contact
     case SEARCH_CONTACT_SUCCESS:
-      console.log(`OP:${SEARCH_CONTACT_SUCCESS}`, action);
       return {
         ...state,
         params: {
@@ -149,7 +137,6 @@ export default function phoneBookReducers(state = initialState, action) {
         },
       };
     case SEARCH_CONTACT_RESET_QUERY:
-      console.log(`OP:${SEARCH_CONTACT_RESET_QUERY}`, action);
       return {
         ...state,
         params: {

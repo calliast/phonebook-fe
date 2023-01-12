@@ -15,7 +15,6 @@ export default function UserList(props) {
   const handleScrolling = (event) => {
     if (event.target.scrollHeight - event.target.scrollTop === event.target.clientHeight) {
       dispatch(loadMore())
-      console.log("scroll triggered");
     }
   };
 

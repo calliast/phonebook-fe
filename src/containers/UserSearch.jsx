@@ -57,7 +57,6 @@ export default function UserSearch(props) {
       phone: query.phone,
       mode: mode.mode,
     }))
-    console.log(mode.mode);
     setSearch({
       isSearch: true,
     });
@@ -91,13 +90,13 @@ export default function UserSearch(props) {
           <div className="row my-1">
             <div className="col-sm-6">
               <div className="row">
-                <div className="col-sm-4">
+                <div className="col-sm-6">
                   <button type="submit" form="search-contact-form" className="btn btn-secondary col-sm-12">
                     Search
                   </button>
                 </div>
                 {search.isSearch && (
-                  <div className="col-sm-4">
+                  <div className="col-sm-6">
                     <button type="button" className="btn btn-warning col-sm-12" onClick={handleOnReset}>
                       Reset
                     </button>

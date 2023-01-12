@@ -1,4 +1,4 @@
-import { ADD_CONTACT, ADD_CONTACT_BE_FAILED, ADD_CONTACT_BE_SUCCESS, ADD_CONTACT_FE, DELETE_CONTACT_FAILED, DELETE_CONTACT_SUCCESS, LOAD_CONTACT, LOAD_CONTACT_FAILED, LOAD_CONTACT_REQUEST, LOAD_CONTACT_SUCCESS, LOAD_MORE, LOAD_MORE_FAILED, LOAD_MORE_SUCCESS, RESEND_CONTACT_FAILED, RESEND_CONTACT_SUCCESS, SEARCH_CONTACT_RESET_QUERY, SEARCH_CONTACT_SUCCESS, UPDATE_CONTACT_FAILED, UPDATE_CONTACT_SUCCESS } from "./actionType";
+import { ADD_CONTACT_BE_FAILED, ADD_CONTACT_BE_SUCCESS, ADD_CONTACT_FE, DELETE_CONTACT_FAILED, DELETE_CONTACT_SUCCESS, LOAD_CONTACT_FAILED, LOAD_CONTACT_SUCCESS, LOAD_MORE_FAILED, LOAD_MORE_SUCCESS, RESEND_CONTACT_FAILED, RESEND_CONTACT_SUCCESS, SEARCH_CONTACT_RESET_QUERY, SEARCH_CONTACT_SUCCESS, UPDATE_CONTACT_FAILED, UPDATE_CONTACT_SUCCESS } from "./actionType";
 import axios from "axios";
 
 const request = axios.create({
@@ -8,31 +8,26 @@ const request = axios.create({
 });
 
 // LOAD CONTACT
-const loadContactRequest = () => ({
-  type: LOAD_CONTACT_REQUEST,
-});
 
-const loadContactSuccess = (data) => ({
+const loadContactSuccess = ({response, query}) => ({
   type: LOAD_CONTACT_SUCCESS,
-  data,
+  data: response,
+  query,
 });
 
 const loadContactFailed = (error) => ({
   type: LOAD_CONTACT_FAILED,
-  data: error,
+  error,
 });
 
-export const loadContact = () => async (dispatch, getState) => {
-  console.log(`OP:${LOAD_CONTACT} getState`, getState());
+export const loadContact = (query = {}) => async (dispatch, getState) => {
   const state = getState(); //.phoneBook;
   try {
-    dispatch(loadContactRequest());
     const fetching = await request.get("/api/phonebooks", {
-      params: state.params,
+      params: {...state.params, ...query}
     });
     const response = fetching.data;
-    console.log(`OP:${LOAD_CONTACT} response`, response);
-    dispatch(loadContactSuccess(response));
+    dispatch(loadContactSuccess({response, query}));
   } catch (error) {
     dispatch(loadContactFailed(error));
   }
@@ -48,7 +43,6 @@ const loadMoreFailed = (err) => ({
 });
 
 export const loadMore = () => async (dispatch, getState) => {
-  console.log(`OP:${LOAD_MORE} getState`, getState());
   const state = getState(); //.phoneBook;
   try {
     if (state.params.page < state.params.pages) {
@@ -80,7 +74,6 @@ const addContactBEFailed = (data, error) => ({
 });
 
 export const addContact = (name, phone) => async (dispatch) => {
-  console.log(`OP:${ADD_CONTACT}`);
   const id = Date.now();
   const newContact = {
     id,
@@ -96,7 +89,6 @@ export const addContact = (name, phone) => async (dispatch) => {
       phone,
     });
     const response = fetching.data;
-    console.log("responsenya", response);
     if (response.success) {
       dispatch(addContactBESuccess({ contact: newContact, data: response.data }));
     }
