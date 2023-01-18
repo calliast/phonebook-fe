@@ -11,16 +11,23 @@ export default function UserItem(props) {
 
   const [edit, setEdit] = useState(false);
 
-  const [removeContact, { loading: loadingRemove, error: errorRemove }] = useMutation(REMOVE_CONTACT, {
-    refetchQueries: [{query: LOAD_CONTACT}],
-  });
+  const [removeContact, { loading: loadingRemove, error: errorRemove }] =
+    useMutation(REMOVE_CONTACT, {
+      refetchQueries: [{ query: LOAD_CONTACT }],
+    });
 
-  const [updateContact, { loading: loadingUpdate, error: errorUpdate }] = useMutation(UPDATE_CONTACT, {
-    refetchQueries: [{query: LOAD_CONTACT}],
-    onCompleted: () => {
-      setEdit(false);
-    }
-  });
+  const [updateContact, { loading: loadingUpdate, error: errorUpdate }] =
+    useMutation(UPDATE_CONTACT, {
+      refetchQueries: [{ query: LOAD_CONTACT }],
+      update: (store, { data: { updateContact } }) => {
+        const dataCache = store.readQuery({query: LOAD_CONTACT})
+        console.log(dataCache, 'data cache');
+      },
+      onCompleted: () => {
+        console.log();
+        setEdit(false);
+      },
+    });
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -30,14 +37,13 @@ export default function UserItem(props) {
     });
   };
 
-  const handleUpdateContact = async () => {
+  const handleUpdateContact = () => {
     const data = {
       id: contact.id,
       name: contact.name,
       phone: contact.phone,
     };
-    updateContact({variables: data})
-    
+    updateContact({ variables: data });
   };
 
   const handleCancel = () => {
@@ -62,7 +68,8 @@ export default function UserItem(props) {
     return (
       <tr className="alert alert-danger" role="alert">
         <td>
-          {errorUpdate.name || errorRemove.name}: {errorUpdate.message || errorRemove.message}
+          {errorUpdate.name || errorRemove.name}:{" "}
+          {errorUpdate.message || errorRemove.message}
         </td>
       </tr>
     );

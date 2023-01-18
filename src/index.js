@@ -11,7 +11,13 @@ import {
 
 const client = new ApolloClient({
   uri: "http://localhost:3139/graphql",
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    dataIdFromObject:(data) => {
+      if (typeof data === 'object' && data.hasOwnProperty('success')) {
+        console.log(data, 'ini data full');
+      }
+    }
+  }),
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

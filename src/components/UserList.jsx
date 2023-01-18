@@ -25,6 +25,9 @@ export default function UserList(props) {
         mode: data.params.mode ? data.params.mode : "and",
       });
       setContacts([...(params.page === 1 ? [] : contacts), ...data.contacts]);
+      console.log(params.page, 'cek page');
+      console.log(contacts, 'cek contacts');
+      console.log(data, 'cek data');
     },
   });
 
