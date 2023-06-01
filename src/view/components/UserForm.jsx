@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addContact } from "../features/contact/contactSlice";
+import { addContact } from "../../redux/contact/contactSlice";
 
 export default function UserForm(props) {
   const dispatch = useDispatch();
